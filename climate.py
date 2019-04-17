@@ -54,7 +54,9 @@ def welcome():
 @app.route("/api/precipitation")
 def precipitation():
     """Return a list of precipitation data"""
-    # Dates
+    # Create our session (link) from Python to the DB
+    session = Session(engine)
+   # Dates
     # find the last recording date
     max_date = session.query(func.max(Measurement.date)).all()
     end_date = max_date[0][0] # last recording date
@@ -72,6 +74,7 @@ def precipitation():
 
     # Convert list of tuples into normal list
     precipitation_dict = dict(precipitation_query)
+    session.close()
 
     return jsonify(precipitation_dict)
 
@@ -79,17 +82,22 @@ def precipitation():
 @app.route("/api/stations")
 def stations():
     """Return a list of station data"""
+   # Create our session (link) from Python to the DB
+    session = Session(engine)
     # Query 
     sel_s = [Measurement.station]
     stations_query =    session.query(*sel_s).\
                         group_by(Measurement.station).\
                         order_by(Measurement.station).all()
+    session.close()
 
     return jsonify(stations_query)
 
 @app.route("/api/temperature")
 def temperature():
     """Return a list of temperature data"""
+   # Create our session (link) from Python to the DB
+    session = Session(engine)
     # Dates
     # find the last recording date
     max_date = session.query(func.max(Measurement.date)).all()
@@ -104,7 +112,8 @@ def temperature():
     sel_p = [ Measurement.tobs]
     temperature_query =   session.query(*sel_p).\
                             filter(Measurement.date >= begin_date_, Measurement.date <= end_date_).all()
-
+    session.close()
+    
     return jsonify(temperature_query)
 
 
