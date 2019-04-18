@@ -47,8 +47,8 @@ def welcome():
         f"<br><a href=api/precipitation>/api/precipitation</a></br>"
         f"<br><a href=api/stations>/api/stations</a></br>"
         f"<br><a href=api/temperature>/api/temperature</a></br>"
-        f"<br>/api/<<start>start></br>"
-        f"</api/v1.0/justice-league/superhero/batman"
+        f"<br>/api/</br>"
+        
 
     )
 
@@ -118,21 +118,31 @@ def temperature():
     
     return jsonify(temperature_query)
 
-@app.route("/api/", defaults={"2016-10-14"})
 @app.route("/api/<start>")
-def tempvar(start):
-    """the minimum temperature, the average temperature, and the max temperature for a given start date."""
+def calc_temps(start):
+    """the minimum temperature, the average temperature, and the max temperature for a given date range."""
    # Create our session (link) from Python to the DB
     session = Session(engine)
 
-    canonicalized = start.replace(" ", "").lower() #drop spaces
+    sel = [func.min(Measurement.tobs), 
+        func.avg(Measurement.tobs), 
+        func.max(Measurement.tobs)]
+    calc_temp_query = session.query(*sel).filter(Measurement.date >= start).all()
+
+    return jsonify(calc_temp_query)
+
+@app.route("/api/<start>/<end>")
+def calc_temps_range(start, end):
+    """the minimum temperature, the average temperature, and the max temperature for a given date range."""
+   # Create our session (link) from Python to the DB
+    session = Session(engine)
 
     sel = [func.min(Measurement.tobs), 
-           func.avg(Measurement.tobs), 
-           func.max(Measurement.tobs)]
-    tempvar_query = session.query(*sel).filter(Measurement.date >= start, Measurement.date <= start).all()
-
-    return jsonify(tempvar_query)
+        func.avg(Measurement.tobs), 
+        func.max(Measurement.tobs)]
+    calc_temp_range_query = session.query(*sel).filter(Measurement.date >= start, Measurement.date <= end).all()
+        
+    return jsonify(calc_temp_range_query)
 
 
 if __name__ == '__main__':
