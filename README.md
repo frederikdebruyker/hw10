@@ -8,8 +8,7 @@ Images included:
 - precipitation.png
 - tobs.png
 - trip avg temp.png
-
-With the exception of the last graph, optional complete.
+- daily_normals.png
 
 Original analysis included in climate_starter-initial data analysis.ipynb mainly programmed through sql statements.
 
