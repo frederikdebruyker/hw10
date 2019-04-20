@@ -1,5 +1,9 @@
 # hw10
 Surfs Up!
+
+Overview also available through: https://frederikdebruyker.github.io/hw10/
+
+
 # Step 1 - Climate Analysis and Exploration
 Functionality: climate_starter.ipynb (SQL statements have been commented out as they were converted into ORM)
 
